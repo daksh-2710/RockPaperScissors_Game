@@ -1,0 +1,109 @@
+import random
+
+#functions
+def choice_checker(question, valid_list, error):
+
+  valid = False
+  while not valid:
+
+    #Ask user for choice
+    response = input(question).lower()
+
+    for item in valid_list:
+      if response == item[0] or response == item:
+        return item
+
+    print(error)
+    print()
+
+
+def check_rounds():
+  while True:
+    response = input("How many rounds: ")
+
+    round_error = "Please type either <enter> or an integer that is more than 0\n"
+
+    if response != "":
+      try:
+        response = int(response)
+
+        if response < 1:
+          print(round_error)
+          continue
+
+      except ValueError:
+        print(round_error)
+        continue
+
+    return response
+
+#*main routine*#
+#list of valid responses
+yes_no_list = ["yes", "no"]
+rps_list = ["rock", "paper", "scissors", "xxx"]
+game_summary = []
+rounds_played = 0
+rounds_drawn = 0
+rounds_lost = 0
+rounds = check_rounds()
+choose_instructions = "Please choose rock (r), paper (p), or scissors (s): "
+#rounds
+end_game = "no"
+while end_game == "no":
+  print()
+  if rounds == "":
+    heading = "Continuous Mode: Round {}".format(rounds_played + 1)
+  else:
+    heading = "Round {} of {}".format(rounds_played + 1, rounds)
+
+  print(heading)
+
+  choose_error = "Please choose from rock / paper/ scissors (or xxx to quit)"
+
+  user_choice = choice_checker(choose_instructions, rps_list, choose_error)
+
+  #computer choice
+  comp_choice = random.choice(rps_list[:-1])
+  
+  #exit code
+  if user_choice == "xxx":
+    break
+
+#compare comp choice
+  if comp_choice == user_choice:
+    result = "tie"
+    rounds_drawn += 1
+  elif comp_choice == "rock" and comp_choice == "scissors":
+    result = "won"
+  elif user_choice == "paper" and comp_choice == "rock":
+    result = "won"
+  elif user_choice == "scissors" and comp_choice == "paper":
+    result = "won"
+  else:
+    result = "lost"
+    rounds_lost += 1
+
+  if result == "tie":
+    feedback = "Its a tie"
+  else:
+    feedback = "{} vs {} - you {}".format(user_choice, comp_choice, result)
+
+  print(feedback)
+
+  rounds_played += 1
+
+  if rounds_played == rounds:
+    break
+
+#game statistics
+
+rounds_won = rounds_played - rounds_lost - rounds_drawn
+
+percent_win = rounds_won / rounds_played * 100
+percent_lose = rounds_lost / rounds_played * 100
+percent_tie = rounds_drawn / rounds_played * 100
+
+print()
+
+print("***** Game Statistics *****")
+print("Win: {}, ({:.0f}%)\nLose: {}, ({:.0f}%)\nTie: {}, ({:.0f}%)".format(rounds_won, percent_win, rounds_lost, percent_lose, rounds_drawn, percent_tie))
